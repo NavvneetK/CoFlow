@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 
 import AddDocumentBtn from '@/components/AddDocumentBtn'
 import { DeleteModal } from '@/components/DeleteModal'
@@ -8,6 +7,7 @@ import { getDocuments } from '@/lib/actions/room.actions'
 import { dateConverter } from '@/lib/utils'
 import { SignedIn, SignedOut, SignInButton, UserButton } from '@clerk/nextjs'
 import { currentUser } from '@clerk/nextjs/server'
+import { RoomData } from '@liveblocks/node'
 import Image from 'next/image'
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
@@ -46,25 +46,24 @@ const Home = async () => {
             />
           </div>
           <ul className="document-ul">
-            {roomDocuments.data.map(({ id, metadata, createdAt }: any) => (
-              <li key={id} className="document-list-item">
-                <Link href={`/documents/${id}`} className="flex flex-1 items-center gap-4">
-                  <div className="hidden rounded-md bg-dark-500 p-2 sm:block">
-                    <Image 
-                      src="/assets/icons/doc.svg"
-                      alt="file"
-                      width={40}
-                      height={40}
-                    />
-                  </div>
-                  <div className="space-y-1">
-                    <p className="line-clamp-1 text-lg">{metadata.title}</p>
-                    <p className="text-sm font-light text-blue-100">Created about {dateConverter(createdAt)}</p>
-                  </div>
-                </Link>
-                <DeleteModal roomId={id} />
-              </li>
-            ))}
+    {roomDocuments.data.map((room: RoomData) => (
+      <li key={room.id} className="document-list-item">
+        <Link href={`/documents/${room.id}`} className="flex flex-1 items-center gap-4">
+          <div className="hidden rounded-md bg-dark-500 p-2 sm:block">
+            <Image 
+              src="/assets/icons/doc.svg"
+              alt="file"
+              width={40}
+              height={40}
+            />
+          </div>
+          <div className="space-y-1">
+            <p className="line-clamp-1 text-lg">{room.metadata.title}</p>
+<p className="text-sm font-light text-blue-100">Created about {dateConverter(new Date(room.createdAt).toISOString())}</p>          </div>
+        </Link>
+        <DeleteModal roomId={room.id} />
+      </li>
+    ))}
           </ul>
         </div>
       ) : (
