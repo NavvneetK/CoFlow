@@ -21,6 +21,7 @@ const config = {
     },
     extend: {
       colors: {
+        purple: "#CBACF9",
         blue: {
           100: '#B4C6EE',
           400: '#417BFF',
